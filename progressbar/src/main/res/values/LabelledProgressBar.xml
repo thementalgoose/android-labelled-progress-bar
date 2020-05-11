@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LabelledProgressBar">
+        <attr name="lpb_backgroundColour" format="color" />
+        <attr name="lpb_progressColour" format="color" />
+        <attr name="lpb_textBarColour" format="color" />
+        <attr name="lpb_textBackgroundColour" format="color" />
+        <attr name="lpb_textPadding" format="dimension" />
+        <attr name="lpb_textSize" format="dimension" />
+        <attr name="lpb_timeLimit" format="integer" />
+        <attr name="lpb_radius" format="dimension" />
+        <attr name="lpb_showSliverOnEmpty" format="boolean" />
+
+        <attr name="lpb_initialProgress" format="float" />
+        <attr name="lpb_initialAnimate" format="boolean" />
+    </declare-styleable>
+</resources>

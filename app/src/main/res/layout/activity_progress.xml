@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:paddingStart="16dp"
+    android:paddingBottom="16dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="16dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <tmg.labelledprogressbar.LabelledProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        app:lpb_progressColour="@color/colorPrimary" />
+
+    <tmg.labelledprogressbar.LabelledProgressBar
+        android:id="@+id/progressBar2"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:layout_marginTop="16dp"
+        app:lpb_timeLimit="3000"
+        app:lpb_textSize="12sp"
+        app:lpb_progressColour="#ffca28" />
+
+    <tmg.labelledprogressbar.LabelledProgressBar
+        android:id="@+id/progressBar3"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        app:lpb_textSize="19sp"
+        app:lpb_timeLimit="9232"
+        app:lpb_initialProgress="0.6"
+        app:lpb_initialAnimate="true"
+        app:lpb_progressColour="#9ccc65" />
+
+    <tmg.labelledprogressbar.LabelledProgressBar
+        android:id="@+id/progressBar4"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_marginTop="16dp"
+        app:lpb_textSize="19sp"
+        app:lpb_backgroundColour="#248848"
+        app:lpb_initialProgress="0.3"
+        app:lpb_initialAnimate="false"
+        app:lpb_progressColour="#29b6f6" />
+
+    <tmg.labelledprogressbar.LabelledProgressBar
+        android:id="@+id/progressBar5"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_marginTop="16dp"
+        app:lpb_textSize="19sp"
+        app:lpb_textBackgroundColour="#383838"
+        app:lpb_initialProgress="0.1"
+        app:lpb_progressColour="#bb86fc" />
+
+</LinearLayout>
