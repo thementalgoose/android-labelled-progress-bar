@@ -30,7 +30,7 @@
         android:layout_height="60dp"
         android:layout_marginTop="16dp"
         app:lpb_textSize="19sp"
-        app:lpb_timeLimit="9232"
+        app:lpb_timeLimit="3420"
         app:lpb_initialProgress="0.6"
         app:lpb_initialAnimate="true"
         app:lpb_progressColour="#9ccc65" />
@@ -54,6 +54,16 @@
         app:lpb_textSize="19sp"
         app:lpb_textBackgroundColour="#383838"
         app:lpb_initialProgress="0.1"
+        app:lpb_progressColour="#bb86fc" />
+
+    <tmg.labelledprogressbar.LabelledProgressBar
+        android:id="@+id/progressBar6"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_marginTop="16dp"
+        app:lpb_textSize="24sp"
+        app:lpb_timeLimit="4500"
+        app:lpb_textBackgroundColour="#383838"
         app:lpb_progressColour="#bb86fc" />
 
 </LinearLayout>

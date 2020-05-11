@@ -103,7 +103,6 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
     private var radiusPxToDp: Float = 0.0f
     private var progressPercentage: Float = 0.0f
     private var firstRun: Boolean = true
-    private var callback: LabelledProgressBarCallback? = null
     private var backgroundPaint: Paint = Paint()
     private var progressPaint: Paint = Paint()
     private var textBarPaint: Paint = Paint()
@@ -161,10 +160,6 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
     }
 
     //region Public methods for call
-
-    fun setCallback(callback: LabelledProgressBarCallback) {
-        this.callback = callback
-    }
 
     fun setProgress(progress: Float, evaluator: LabelledProgressBarEvaluator) {
         this.labelResolver = evaluator

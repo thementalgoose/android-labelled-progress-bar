@@ -18,5 +18,15 @@ class ProgressSampleActivity: AppCompatActivity() {
         progressBar2.animateProgress(0.8f) {
             (startValue + ((endValue - startValue) * it)).toInt().toString()
         }
+
+        progressBar6.animateProgress(1.0f) {
+            when {
+                it <= 0.2f -> "poor"
+                it <= 0.4f -> "bad"
+                it <= 0.6f -> "average"
+                it <= 0.8f -> "good"
+                else -> "excellent"
+            }
+        }
     }
 }
