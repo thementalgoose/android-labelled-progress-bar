@@ -113,7 +113,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
 
     private var maxPercentage: Float = 0.0f
     private var drawOnBar: Boolean = true
-    private var textPadding: Float = 8f.dpToPx(context)
+    private var textPadding: Float = defaultTextPaddingDp.dpToPx(context)
     private var textY: Float = 0f
 
     private var canvasWidth: Float = 0.0f
