@@ -14,12 +14,14 @@ import kotlin.math.min
 private const val defaultTextPaddingDp: Float = 8f
 private const val defaultBackgroundColor: Int = Color.WHITE
 private const val defaultProgressColor: Int = Color.CYAN
+private const val defaultTextBarColor: Int = Color.WHITE
+private const val defaultTextBackgroundColor: Int = Color.BLACK
 
 private const val defaultTimeLimit: Long = 1000L
 private const val defaultShowSliverOnZero: Boolean = true
 
 private const val defaultRadius: Float = 0f
-private const val defaultTextSize: Float = 14f
+private const val defaultTextSize: Float = 16f
 
 private val defaultResolver: ((progress: Float) -> String) = { "${(it * 100).toInt()}%" }
 private val defaultEvaluator: LabelledProgressBarEvaluator = object : LabelledProgressBarEvaluator {
@@ -34,7 +36,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
     /**
      * Background color of the progress var
      */
-    var backgroundColour: Int = Color.WHITE
+    var backgroundColour: Int = defaultBackgroundColor
         set(value) {
             backgroundPaint.color = value
             field = value
@@ -42,7 +44,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
     /**
      * Background color of the progress bar
      */
-    var progressColour: Int = Color.BLACK
+    var progressColour: Int = defaultProgressColor
         set(value) {
             progressPaint.color = value
             field = value
@@ -52,7 +54,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
      * Text colour when the text is displayed on the progress bar
      * (ie. On the left hand side of the progress bar)
      */
-    var textBarColour: Int = Color.WHITE
+    var textBarColour: Int = defaultTextBarColor
         set(value) {
             textBarPaint.color = value
             field = value
@@ -62,7 +64,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
      * Text colour when the text is displayed on the background
      * (ie. On the right hand side of the progress bar)
      */
-    var textBackgroundColour: Int = Color.BLACK
+    var textBackgroundColour: Int = defaultTextBackgroundColor
         set(value) {
             textBackgroundPaint.color = value
             field = value
@@ -77,12 +79,17 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
     /**
      * Text size of the label that's displayed
      */
-    var textSize: Float = 16f.dpToPx(context)
+    var textSize: Float = defaultTextSize.dpToPx(context)
         set(value) {
             textBarPaint.textSize = value
             textBackgroundPaint.textSize = value
             field = value
         }
+    // var textSizeDp: Float
+    //     private get() = textSize.pxToDp(context)
+    //     set(value) { 
+    //         textSize = value.dpToPx(context)
+    //     }
 
     /**
      * Show a small amount of the progress bar when the value is zero
@@ -92,6 +99,10 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
      */
     var showSliverOnZero: Boolean = defaultShowSliverOnZero
 
+    /**
+     * Box radius of the progress bar
+     */
+    var radius: Float = defaultRadius.dpToPx(context)
 
     private var maxPercentage: Float = 0.0f
     private var drawOnBar: Boolean = true
