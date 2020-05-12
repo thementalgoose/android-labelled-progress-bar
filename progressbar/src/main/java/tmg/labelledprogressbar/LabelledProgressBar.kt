@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import kotlin.math.max
@@ -79,17 +80,17 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
     /**
      * Text size of the label that's displayed
      */
-    var textSize: Float = defaultTextSize.dpToPx(context)
+    var textSizeDp: Float
+        get() = textSize.pxToDp(context)
+        set(value) {
+            textSize = textSizeDp.dpToPx(context)
+        }
+    private var textSize: Float = defaultTextSize.dpToPx(context)
         set(value) {
             textBarPaint.textSize = value
             textBackgroundPaint.textSize = value
             field = value
         }
-    // var textSizeDp: Float
-    //     private get() = textSize.pxToDp(context)
-    //     set(value) { 
-    //         textSize = value.dpToPx(context)
-    //     }
 
     /**
      * Show a small amount of the progress bar when the value is zero
@@ -102,7 +103,13 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
     /**
      * Box radius of the progress bar
      */
-    var radius: Float = defaultRadius.dpToPx(context)
+    var radiusDp: Float
+        get() = radius.pxToDp(context)
+        set(value) {
+            radius = radiusDp.dpToPx(context)
+        }
+
+    private var radius: Float = defaultRadius.dpToPx(context)
 
     private var maxPercentage: Float = 0.0f
     private var drawOnBar: Boolean = true
@@ -111,7 +118,6 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
 
     private var canvasWidth: Float = 0.0f
     private var canvasHeight: Float = 0.0f
-    private var radiusPxToDp: Float = 0.0f
     private var progressPercentage: Float = 0.0f
     private var firstRun: Boolean = true
     private var backgroundPaint: Paint = Paint()
@@ -151,6 +157,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
                     textSize = getDimension(R.styleable.LabelledProgressBar_lpb_textSize, textSize)
                     timeLimit = getInt(R.styleable.LabelledProgressBar_lpb_timeLimit, timeLimit)
                     showSliverOnZero = getBoolean(R.styleable.LabelledProgressBar_lpb_showSliverOnEmpty, defaultShowSliverOnZero)
+                    radius = getDimension(R.styleable.LabelledProgressBar_lpb_radius, radius)
 
                     initialProgress = getFloat(R.styleable.LabelledProgressBar_lpb_initialProgress, initialProgress).coerceIn(0f, 1f)
                     initialAnimate = getBoolean(R.styleable.LabelledProgressBar_lpb_initialAnimate, initialAnimate)
@@ -204,7 +211,6 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
     //endregion
 
     private fun initVariables() {
-        radiusPxToDp = 6.dpToPx(context)
         canvasWidth = width.toFloat()
         canvasHeight = height.toFloat()
 
@@ -253,8 +259,8 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
             0f,
             canvasWidth,
             canvasHeight,
-            radiusPxToDp,
-            radiusPxToDp,
+            radius,
+            radius,
             backgroundPaint
         )
         canvas?.drawRoundRect(
@@ -262,8 +268,8 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
             0f,
             progressPercentage * canvasWidth,
             canvasHeight,
-            radiusPxToDp,
-            radiusPxToDp,
+            radius,
+            radius,
             progressPaint
         )
 
