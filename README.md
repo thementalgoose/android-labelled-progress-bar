@@ -23,7 +23,7 @@ Small library which provides a labelled animating progress bar
     <summary><code>app/build.gradle</code></summary>
 
     dependencies {
-        implementation 'com.github.thementalgoose:android-labelled-progress-bar:1.0.0'
+        implementation 'com.github.thementalgoose:android-labelled-progress-bar:1.0.1'
         // Use Jitpack version if newer
     }
 
