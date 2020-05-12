@@ -80,10 +80,10 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
     /**
      * Text size of the label that's displayed
      */
-    var textSizeDp: Float
+    var textSizeSp: Float
         get() = textSize.pxToDp(context)
         set(value) {
-            textSize = textSizeDp.dpToPx(context)
+            textSize = textSizeSp.dpToPx(context)
         }
     private var textSize: Float = defaultTextSize.dpToPx(context)
         set(value) {
