@@ -183,6 +183,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
         maxPercentage = progress.coerceIn(0.0f, 1.0f)
         progressPercentage = progress.coerceIn(0.0f, 1.0f)
         drawOnBar(maxPercentage)
+        updateContentDescription()
         invalidate()
     }
 
@@ -201,6 +202,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
         maxPercentage = progress.coerceIn(0.0f, 1.0f)
         start(progress.coerceIn(0.0f, 1.0f))
         drawOnBar(maxPercentage)
+        updateContentDescription()
     }
 
     fun animateProgress(progress: Float, fromBeginning: Boolean = true, resolver: ((progress: Float) -> String) = defaultResolver) {
@@ -211,6 +213,15 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
     }
 
     //endregion
+
+    private fun updateContentDescription() {
+        val maxLabel = this.labelResolver.evaluate(maxPercentage)
+        contentDescription = if (maxLabel.trim().isNotEmpty()) {
+            maxLabel
+        } else {
+            "${(maxPercentage * 100f).toInt()}%"
+        }
+    }
 
     private fun initVariables() {
         canvasWidth = width.toFloat()
