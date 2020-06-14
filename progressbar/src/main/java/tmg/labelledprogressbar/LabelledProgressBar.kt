@@ -6,7 +6,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import kotlin.math.max
@@ -193,9 +192,10 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
         })
     }
 
-    fun animateProgress(progress: Float, fromLastPosition: Boolean = true, evaluator: LabelledProgressBarEvaluator) {
+    fun animateProgress(progress: Float, fromBeginning: Boolean = true, evaluator: LabelledProgressBarEvaluator) {
+        // fromBeginning = false will mean the bar will animate from it's last position (for first run)
         this.labelResolver = evaluator
-        if (fromLastPosition) {
+        if (fromBeginning) {
             progressPercentage = 0f
         }
         maxPercentage = progress.coerceIn(0.0f, 1.0f)
@@ -203,8 +203,9 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
         drawOnBar(maxPercentage)
     }
 
-    fun animateProgress(progress: Float, fromLastPosition: Boolean = true, resolver: ((progress: Float) -> String) = defaultResolver) {
-        this.animateProgress(progress, fromLastPosition, object : LabelledProgressBarEvaluator {
+    fun animateProgress(progress: Float, fromBeginning: Boolean = true, resolver: ((progress: Float) -> String) = defaultResolver) {
+        // fromBeginning = false will mean the bar will animate from it's last position (for first run)
+        this.animateProgress(progress, fromBeginning, object : LabelledProgressBarEvaluator {
             override fun evaluate(progress: Float): String = resolver.invoke(progress)
         })
     }
