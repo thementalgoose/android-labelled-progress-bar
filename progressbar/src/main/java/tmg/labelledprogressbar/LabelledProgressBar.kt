@@ -184,6 +184,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
         maxPercentage = progress.coerceIn(0.0f, 1.0f)
         progressPercentage = progress.coerceIn(0.0f, 1.0f)
         drawOnBar(maxPercentage)
+        invalidate()
     }
 
     fun setProgress(progress: Float, resolver: ((progress: Float) -> String) = defaultResolver) {
