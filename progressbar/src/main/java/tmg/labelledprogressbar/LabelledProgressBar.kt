@@ -180,9 +180,9 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
 
     fun setProgress(progress: Float, evaluator: LabelledProgressBarEvaluator) {
         this.labelResolver = evaluator
+        firstRun = true
         maxPercentage = progress.coerceIn(0.0f, 1.0f)
         progressPercentage = progress.coerceIn(0.0f, 1.0f)
-        drawOnBar(maxPercentage)
         updateContentDescription()
         invalidate()
     }
@@ -195,13 +195,13 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
 
     fun animateProgress(progress: Float, fromBeginning: Boolean = true, evaluator: LabelledProgressBarEvaluator) {
         // fromBeginning = false will mean the bar will animate from it's last position (for first run)
+        this.firstRun = true
         this.labelResolver = evaluator
         if (fromBeginning) {
             progressPercentage = 0f
         }
         maxPercentage = progress.coerceIn(0.0f, 1.0f)
         start(progress.coerceIn(0.0f, 1.0f))
-        drawOnBar(maxPercentage)
         updateContentDescription()
     }
 
