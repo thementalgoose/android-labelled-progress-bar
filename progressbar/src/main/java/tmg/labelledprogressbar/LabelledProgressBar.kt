@@ -28,9 +28,6 @@ private val defaultEvaluator: LabelledProgressBarEvaluator = object : LabelledPr
     override fun evaluate(progress: Float) = defaultResolver(progress)
 }
 
-/**
- * Copied from initial implementation as CorrectPercentProgressView from Transmission
- */
 class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
 
     /**
@@ -41,6 +38,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
             backgroundPaint.color = value
             field = value
         }
+
     /**
      * Background color of the progress bar
      */
@@ -108,6 +106,14 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
             radius = radiusDp.dpToPx(context)
         }
 
+    /**
+     * If the animation should start from.
+     *   true = animates from left to right
+     *   false = animated from right to left
+     * Defaults to true (LTR)
+     */
+    var fromLeft: Boolean = true
+
     private var radius: Float = defaultRadius.dpToPx(context)
 
     private var maxPercentage: Float = 0.0f
@@ -121,8 +127,12 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
     private var firstRun: Boolean = true
     private var backgroundPaint: Paint = Paint()
     private var progressPaint: Paint = Paint()
-    private var textBarPaint: Paint = Paint()
-    private var textBackgroundPaint: Paint = Paint()
+    private var textBarPaint: Paint = Paint().apply {
+        isAntiAlias = true
+    }
+    private var textBackgroundPaint: Paint = Paint().apply {
+        isAntiAlias = true
+    }
     private lateinit var valueAnimator: ValueAnimator
     private var labelResolver: LabelledProgressBarEvaluator = defaultEvaluator
 
@@ -158,6 +168,8 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
                     showSliverOnZero = getBoolean(R.styleable.LabelledProgressBar_lpb_showSliverOnEmpty, defaultShowSliverOnZero)
                     radius = getDimension(R.styleable.LabelledProgressBar_lpb_radius, radius)
 
+                    fromLeft = getBoolean(R.styleable.LabelledProgressBar_lpb_fromLeft, true)
+
                     initialProgress = getFloat(R.styleable.LabelledProgressBar_lpb_initialProgress, initialProgress).coerceIn(0f, 1f)
                     initialAnimate = getBoolean(R.styleable.LabelledProgressBar_lpb_initialAnimate, initialAnimate)
                 } finally {
@@ -168,8 +180,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
         if (initialProgress != 0f) {
             if (initialAnimate) {
                 start(initialProgress)
-            }
-            else {
+            } else {
                 progressPercentage = initialProgress
             }
             maxPercentage = initialProgress
@@ -193,7 +204,11 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
         })
     }
 
-    fun animateProgress(progress: Float, fromBeginning: Boolean = true, evaluator: LabelledProgressBarEvaluator) {
+    fun animateProgress(
+        progress: Float,
+        fromBeginning: Boolean = true,
+        evaluator: LabelledProgressBarEvaluator
+    ) {
         // fromBeginning = false will mean the bar will animate from it's last position (for first run)
         this.firstRun = true
         this.labelResolver = evaluator
@@ -205,7 +220,11 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
         updateContentDescription()
     }
 
-    fun animateProgress(progress: Float, fromBeginning: Boolean = true, resolver: ((progress: Float) -> String) = defaultResolver) {
+    fun animateProgress(
+        progress: Float,
+        fromBeginning: Boolean = true,
+        resolver: ((progress: Float) -> String) = defaultResolver
+    ) {
         // fromBeginning = false will mean the bar will animate from it's last position (for first run)
         this.animateProgress(progress, fromBeginning, object : LabelledProgressBarEvaluator {
             override fun evaluate(progress: Float): String = resolver.invoke(progress)
@@ -233,7 +252,8 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
     }
 
     private fun drawOnBar(maxPercentage: Float) {
-        val textWidth = textBarPaint.measureText(labelResolver.evaluate(maxPercentage)) + (textPadding * 2f)
+        val textWidth =
+            textBarPaint.measureText(labelResolver.evaluate(maxPercentage)) + (textPadding * 2f)
         val barFinalWidth = maxPercentage * canvasWidth
         drawOnBar = textWidth < barFinalWidth
     }
@@ -267,29 +287,38 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
         val percentage: String = labelResolver.evaluate(progressPercentage)
         val textWidth: Float = textBarPaint.measureText(percentage)
 
-        canvas?.drawRoundRect(
-            0f,
-            0f,
-            canvasWidth,
-            canvasHeight,
-            radius,
-            radius,
-            backgroundPaint
-        )
-        canvas?.drawRoundRect(
-            0f,
-            0f,
-            progressPercentage * canvasWidth,
-            canvasHeight,
-            radius,
-            radius,
-            progressPaint
-        )
+        canvas?.apply {
 
-        if (drawOnBar) {
-            canvas?.drawText(percentage, (progressPercentage * canvasWidth) - textPadding - textWidth, textY, textBarPaint)
-        } else {
-            canvas?.drawText(percentage,(progressPercentage * canvasWidth) + textPadding, textY, textBackgroundPaint)
+            // Draw background
+            drawRoundRect(0f, 0f, canvasWidth, canvasHeight, radius, radius, backgroundPaint)
+
+            // Draw prorgess bar
+            drawProgressBar(fromLeft)
+
+            // Draw text
+            when {
+                fromLeft && drawOnBar -> {
+                    drawText(percentage, (progressPercentage * canvasWidth) - textPadding - textWidth, textY, textBarPaint)
+                }
+                fromLeft && !drawOnBar -> {
+                    drawText(percentage, (progressPercentage * canvasWidth) + textPadding, textY, textBackgroundPaint)
+                }
+                !fromLeft && drawOnBar -> {
+                    drawText(percentage, ((1.0f - progressPercentage) * canvasWidth) + textPadding, textY, textBarPaint)
+                }
+                !fromLeft && !drawOnBar -> {
+                    drawText(percentage, ((1.0f - progressPercentage) * canvasWidth) - (textPadding + textWidth), textY, textBackgroundPaint)
+                }
+            }
+        }
+    }
+
+    private fun Canvas.drawProgressBar(fromLeft: Boolean) {
+        if (fromLeft) {
+            drawRoundRect(0f, 0f, progressPercentage * canvasWidth, canvasHeight, radius, radius, progressPaint)
+        }
+        else {
+            drawRoundRect(canvasWidth, 0f, (1.0f - progressPercentage) * canvasWidth, canvasHeight, radius, radius, progressPaint)
         }
     }
 
