@@ -11,6 +11,8 @@
         <attr name="lpb_radius" format="dimension" />
         <attr name="lpb_showSliverOnEmpty" format="boolean" />
 
+        <attr name="lpb_fromLeft" format="boolean" />
+
         <attr name="lpb_initialProgress" format="float" />
         <attr name="lpb_initialAnimate" format="boolean" />
     </declare-styleable>

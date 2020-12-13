@@ -38,6 +38,7 @@ Jitpack version: [![](https://jitpack.io/v/thementalgoose/android-labelled-progr
     android:layout_width="match_parent"
     android:layout_height="28dp"
     android:layout_marginTop="16dp"
+    app:lpb_fromLeft="true"
     app:lpb_backgroundColour="#ffffff"
     app:lpb_progressColour="#817394"
     app:lpb_textBarColour="#827204"
@@ -88,3 +89,4 @@ labelledProgressBar.animateProgress(0.7f) { progress ->
 | `app:lpb_showSliverOnEmpty` | When the progress is 0.0f, show a tiny little bar |
 | `app:lpb_initialProgress` | Initialise the widget with a progress. Capped between 0.0f and 1.0f |
 | `app:lpb_initialAnimate` | Initialise the widget with an animation. `app:lpb_initialProgress` must also be set to a value for this to take effect |
+| `app:lpb_fromLeft` | Animate the bar from left to right if true, or from right to left if false. Defaults to true |

@@ -37,6 +37,44 @@
         app:lpb_timeLimit="3420" />
 
     <tmg.labelledprogressbar.LabelledProgressBar
+        android:id="@+id/progressBar3Four"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        app:lpb_initialAnimate="true"
+        app:lpb_initialProgress="0.03"
+        app:lpb_progressColour="#bcccf5"
+        app:lpb_radius="4dp"
+        app:lpb_textSize="19sp"
+        app:lpb_timeLimit="1838" />
+
+    <tmg.labelledprogressbar.LabelledProgressBar
+        android:id="@+id/progressBar3second"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        app:lpb_fromLeft="false"
+        app:lpb_initialAnimate="true"
+        app:lpb_initialProgress="0.6"
+        app:lpb_progressColour="#fe1184"
+        app:lpb_radius="4dp"
+        app:lpb_textSize="19sp"
+        app:lpb_timeLimit="3420" />
+
+    <tmg.labelledprogressbar.LabelledProgressBar
+        android:id="@+id/progressBar3third"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        app:lpb_fromLeft="false"
+        app:lpb_initialAnimate="true"
+        app:lpb_initialProgress="0.02"
+        app:lpb_progressColour="#917394"
+        app:lpb_radius="4dp"
+        app:lpb_textSize="19sp"
+        app:lpb_timeLimit="3420" />
+
+    <tmg.labelledprogressbar.LabelledProgressBar
         android:id="@+id/progressBar4"
         android:layout_width="match_parent"
         android:layout_height="36dp"
