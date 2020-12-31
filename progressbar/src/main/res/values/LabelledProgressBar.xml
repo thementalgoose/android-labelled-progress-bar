@@ -10,6 +10,7 @@
         <attr name="lpb_timeLimit" format="integer" />
         <attr name="lpb_radius" format="dimension" />
         <attr name="lpb_showSliverOnEmpty" format="boolean" />
+        <attr name="lpb_sliverWidth" format="dimension" />
 
         <attr name="lpb_fromLeft" format="boolean" />
 
