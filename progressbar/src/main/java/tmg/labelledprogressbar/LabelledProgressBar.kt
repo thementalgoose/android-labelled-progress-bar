@@ -1,5 +1,6 @@
 package tmg.labelledprogressbar
 
+import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
@@ -28,7 +29,7 @@ private val defaultEvaluator: LabelledProgressBarEvaluator = object : LabelledPr
     override fun evaluate(progress: Float) = defaultResolver(progress)
 }
 
-class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
+class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
 
     /**
      * Background color of the progress var
@@ -179,7 +180,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
 
         if (initialProgress != 0f) {
             if (initialAnimate) {
-                start(initialProgress)
+                startAnimation(initialProgress)
             } else {
                 progressPercentage = initialProgress
             }
@@ -216,7 +217,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
             progressPercentage = 0f
         }
         maxPercentage = progress.coerceIn(0.0f, 1.0f)
-        start(progress.coerceIn(0.0f, 1.0f))
+        startAnimation(progress.coerceIn(0.0f, 1.0f))
         updateContentDescription()
     }
 
@@ -258,11 +259,12 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
         drawOnBar = textWidth < barFinalWidth
     }
 
-    private fun start(withProgress: Float) {
+    private fun startAnimation(withProgress: Float) {
         val prog: Float = max(if (showSliverOnZero) 0.01f else 0.0f, min(1.0f, withProgress))
         valueAnimator = ValueAnimator.ofFloat(progressPercentage, prog)
         valueAnimator.interpolator = DecelerateInterpolator()
         valueAnimator.duration = (timeLimit.toLong())
+        valueAnimator.addListener(this)
         valueAnimator.addUpdateListener(this)
         valueAnimator.start()
     }
@@ -330,6 +332,19 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener {
             invalidate()
         }
     }
+
+    //endregion
+
+    //region Animator.AnimatorListener
+
+    override fun onAnimationEnd(animation: Animator?) {
+        progressPercentage = maxPercentage
+        invalidate()
+    }
+
+    override fun onAnimationStart(animation: Animator?) { /* Do nothing */ }
+    override fun onAnimationCancel(animation: Animator?) { /* Do nothing */ }
+    override fun onAnimationRepeat(animation: Animator?) { /* Do nothing */ }
 
     //endregion
 }
