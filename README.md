@@ -23,7 +23,7 @@ Small library which provides a labelled animating progress bar
     <summary><code>app/build.gradle</code></summary>
 
     dependencies {
-        implementation 'com.github.thementalgoose:android-labelled-progress-bar:1.0.5'
+        implementation 'com.github.thementalgoose:android-labelled-progress-bar:1.0.6'
         // Use Jitpack version if newer
     }
 
@@ -47,7 +47,8 @@ Jitpack version: [![](https://jitpack.io/v/thementalgoose/android-labelled-progr
     app:lpb_textSize="14sp"
     app:lpb_timeLimit="1000"
     app:lpb_radius="6dp"
-    app:lpb_showSliverOnEmpty="true|false"
+    app:lpb_sliverWidth="1dp"
+    app:lpb_showSliverOnEmpty="true|false" <!-- Deprecated -->
     app:lpb_initialProgress="0.4"
     app:lpb_initialAnimate="true" />
 ```
@@ -86,7 +87,8 @@ labelledProgressBar.animateProgress(0.7f) { progress ->
 | `app:lpb_textSize` | Text size of the label |
 | `app:lpb_timeLimit` | Time limit in milliseconds for how long the animation should take |
 | `app:lpb_radius` | Radius of the corners of the progress bar |
-| `app:lpb_showSliverOnEmpty` | When the progress is 0.0f, show a tiny little bar |
+| `app:lpb_showSliverOnEmpty` | *Deprecated*: Please use sliverWidth instead. |
+| `app:lpb_sliverWidth` | When the progress is 0f, show a little sliver of a bar to indicate something is there. Defaults to 0dp (ie. off) |
 | `app:lpb_initialProgress` | Initialise the widget with a progress. Capped between 0.0f and 1.0f |
 | `app:lpb_initialAnimate` | Initialise the widget with an animation. `app:lpb_initialProgress` must also be set to a value for this to take effect |
 | `app:lpb_fromLeft` | Animate the bar from left to right if true, or from right to left if false. Defaults to true |

@@ -7,6 +7,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import kotlin.math.max
@@ -19,9 +20,9 @@ private const val defaultTextBarColor: Int = Color.WHITE
 private const val defaultTextBackgroundColor: Int = Color.BLACK
 
 private const val defaultTimeLimit: Long = 1000L
-private const val defaultShowSliverOnZero: Boolean = true
 
 private const val defaultRadius: Float = 0f
+private const val defaultSliverWidth: Float = 0f
 private const val defaultTextSize: Float = 16f
 
 private val defaultResolver: ((progress: Float) -> String) = { "${(it * 100).toInt()}%" }
@@ -96,7 +97,24 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener, Animator
      * true: A small amount is displayed on the left
      * false: Bar is completely empty when progress is 0
      */
-    var showSliverOnZero: Boolean = defaultShowSliverOnZero
+    @Deprecated("Specify the width using `sliverWidthDp`. Set width to zero to turn it off")
+    var showSliverOnZero: Boolean
+        get() = sliverWidthDp != 0f
+        set(value) = when (value) {
+            true -> sliverWidthDp = defaultSliverWidth
+            false -> sliverWidthDp = 0f
+        }
+
+    /**
+     * Show a small amount of the progress bar when the value is zero
+     *
+     * If this value is set to 0, the sliver is not shown
+     */
+    var sliverWidthDp: Float
+        get() = sliverWidth.pxToDp(context)
+        set(value) {
+            sliverWidth = sliverWidthDp.dpToPx(context)
+        }
 
     /**
      * Box radius of the progress bar
@@ -116,6 +134,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener, Animator
     var fromLeft: Boolean = true
 
     private var radius: Float = defaultRadius.dpToPx(context)
+    private var sliverWidth: Float = defaultSliverWidth.dpToPx(context)
 
     private var maxPercentage: Float = 0.0f
     private var drawOnBar: Boolean = true
@@ -166,13 +185,22 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener, Animator
                     textPadding = getDimension(R.styleable.LabelledProgressBar_lpb_textPadding, textPadding)
                     textSize = getDimension(R.styleable.LabelledProgressBar_lpb_textSize, textSize)
                     timeLimit = getInt(R.styleable.LabelledProgressBar_lpb_timeLimit, timeLimit)
-                    showSliverOnZero = getBoolean(R.styleable.LabelledProgressBar_lpb_showSliverOnEmpty, defaultShowSliverOnZero)
+                    sliverWidth = getDimension(R.styleable.LabelledProgressBar_lpb_sliverWidth, defaultSliverWidth)
+                    showSliverOnZero = getBoolean(R.styleable.LabelledProgressBar_lpb_showSliverOnEmpty, false)
                     radius = getDimension(R.styleable.LabelledProgressBar_lpb_radius, radius)
 
                     fromLeft = getBoolean(R.styleable.LabelledProgressBar_lpb_fromLeft, true)
 
                     initialProgress = getFloat(R.styleable.LabelledProgressBar_lpb_initialProgress, initialProgress).coerceIn(0f, 1f)
                     initialAnimate = getBoolean(R.styleable.LabelledProgressBar_lpb_initialAnimate, initialAnimate)
+
+                    // To be removed in the future
+                    if (showSliverOnZero && sliverWidth == 0.0f) {
+                        if (BuildConfig.DEBUG) {
+                            Log.d("LabelledProgressBar", "showSliverOnEmpty is set to true but has been deprecated, setting sliverWidth to 1dp. Please use sliverWidth to customise this")
+                        }
+                        sliverWidth = defaultSliverWidth
+                    }
                 } finally {
                     recycle()
                 }
@@ -188,7 +216,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener, Animator
         }
     }
 
-    //region Public methods for call
+    //region Public methods for starting / setting progress
 
     fun setProgress(progress: Float, evaluator: LabelledProgressBarEvaluator) {
         this.labelResolver = evaluator
@@ -252,7 +280,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener, Animator
         firstRun = false
     }
 
-    private fun drawOnBar(maxPercentage: Float) {
+    private fun shouldDrawOnBar(maxPercentage: Float) {
         val textWidth =
             textBarPaint.measureText(labelResolver.evaluate(maxPercentage)) + (textPadding * 2f)
         val barFinalWidth = maxPercentage * canvasWidth
@@ -260,8 +288,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener, Animator
     }
 
     private fun startAnimation(withProgress: Float) {
-        val prog: Float = max(if (showSliverOnZero) 0.01f else 0.0f, min(1.0f, withProgress))
-        valueAnimator = ValueAnimator.ofFloat(progressPercentage, prog)
+        valueAnimator = ValueAnimator.ofFloat(progressPercentage, withProgress)
         valueAnimator.interpolator = DecelerateInterpolator()
         valueAnimator.duration = (timeLimit.toLong())
         valueAnimator.addListener(this)
@@ -274,15 +301,20 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener, Animator
 
         if (firstRun) {
             initVariables()
-            drawOnBar(maxPercentage)
+            shouldDrawOnBar(maxPercentage)
+        }
+
+        var progressPercentageToDraw = when (sliverWidth == 0f) {
+            true -> progressPercentage
+            false -> if (maxPercentage == 0.0f) sliverWidth / canvasWidth else progressPercentage
         }
 
         if (isInEditMode) {
             if (initialProgress != 0f) {
-                progressPercentage = initialProgress
+                progressPercentageToDraw = initialProgress
             }
-            if (progressPercentage == 0f) {
-                progressPercentage = 0.5f
+            if (progressPercentageToDraw == 0f) {
+                progressPercentageToDraw = 0.5f
             }
         }
 
@@ -295,32 +327,32 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener, Animator
             drawRoundRect(0f, 0f, canvasWidth, canvasHeight, radius, radius, backgroundPaint)
 
             // Draw prorgess bar
-            drawProgressBar(fromLeft)
+            drawProgressBar(fromLeft, progressPercentageToDraw)
 
             // Draw text
             when {
                 fromLeft && drawOnBar -> {
-                    drawText(percentage, (progressPercentage * canvasWidth) - textPadding - textWidth, textY, textBarPaint)
+                    drawText(percentage, (progressPercentageToDraw * canvasWidth) - textPadding - textWidth, textY, textBarPaint)
                 }
                 fromLeft && !drawOnBar -> {
-                    drawText(percentage, (progressPercentage * canvasWidth) + textPadding, textY, textBackgroundPaint)
+                    drawText(percentage, (progressPercentageToDraw * canvasWidth) + textPadding, textY, textBackgroundPaint)
                 }
                 !fromLeft && drawOnBar -> {
-                    drawText(percentage, ((1.0f - progressPercentage) * canvasWidth) + textPadding, textY, textBarPaint)
+                    drawText(percentage, ((1.0f - progressPercentageToDraw) * canvasWidth) + textPadding, textY, textBarPaint)
                 }
                 !fromLeft && !drawOnBar -> {
-                    drawText(percentage, ((1.0f - progressPercentage) * canvasWidth) - (textPadding + textWidth), textY, textBackgroundPaint)
+                    drawText(percentage, ((1.0f - progressPercentageToDraw) * canvasWidth) - (textPadding + textWidth), textY, textBackgroundPaint)
                 }
             }
         }
     }
 
-    private fun Canvas.drawProgressBar(fromLeft: Boolean) {
+    private fun Canvas.drawProgressBar(fromLeft: Boolean, progressPercentageToDraw: Float) {
         if (fromLeft) {
-            drawRoundRect(0f, 0f, progressPercentage * canvasWidth, canvasHeight, radius, radius, progressPaint)
+            drawRoundRect(0f, 0f, progressPercentageToDraw * canvasWidth, canvasHeight, radius, radius, progressPaint)
         }
         else {
-            drawRoundRect(canvasWidth, 0f, (1.0f - progressPercentage) * canvasWidth, canvasHeight, radius, radius, progressPaint)
+            drawRoundRect(canvasWidth, 0f, (1.0f - progressPercentageToDraw) * canvasWidth, canvasHeight, radius, radius, progressPaint)
         }
     }
 
