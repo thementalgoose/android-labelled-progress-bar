@@ -28,5 +28,12 @@ class ProgressSampleActivity: AppCompatActivity() {
                 else -> "excellent"
             }
         }
+
+        progressBar7.animateProgress(0.0f) {
+            "0 - No sliver"
+        }
+        progressBar8.animateProgress(0.0f) {
+            "0 - Sliver shown"
+        }
     }
 }
