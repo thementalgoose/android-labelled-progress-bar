@@ -318,7 +318,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener, Animator
             }
         }
 
-        val percentage: String = labelResolver.evaluate(progressPercentageToDraw)
+        val percentage: String = labelResolver.evaluate(progressPercentage)
         val textWidth: Float = textBarPaint.measureText(percentage)
 
         canvas?.apply {
