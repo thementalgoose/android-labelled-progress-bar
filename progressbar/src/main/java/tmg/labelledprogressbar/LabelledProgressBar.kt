@@ -30,6 +30,7 @@ private val defaultEvaluator: LabelledProgressBarEvaluator = object : LabelledPr
     override fun evaluate(progress: Float) = defaultResolver(progress)
 }
 
+
 class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
 
     /**
@@ -358,7 +359,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener, Animator
 
     //region ValueAnimator.AnimatorUpdateListener
 
-    override fun onAnimationUpdate(animation: ValueAnimator?) {
+    override fun onAnimationUpdate(animation: ValueAnimator) {
         if (animation == valueAnimator) {
             progressPercentage = animation.animatedValue as Float
             invalidate()
@@ -369,14 +370,14 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener, Animator
 
     //region Animator.AnimatorListener
 
-    override fun onAnimationEnd(animation: Animator?) {
+    override fun onAnimationEnd(animation: Animator) {
         progressPercentage = maxPercentage
         invalidate()
     }
 
-    override fun onAnimationStart(animation: Animator?) { /* Do nothing */ }
-    override fun onAnimationCancel(animation: Animator?) { /* Do nothing */ }
-    override fun onAnimationRepeat(animation: Animator?) { /* Do nothing */ }
+    override fun onAnimationStart(animation: Animator) { /* Do nothing */ }
+    override fun onAnimationCancel(animation: Animator) { /* Do nothing */ }
+    override fun onAnimationRepeat(animation: Animator) { /* Do nothing */ }
 
     //endregion
 }
