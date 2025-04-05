@@ -1,0 +1,16 @@
+[versions]  # ===========================================================================
+kotlin = "2.1.20"
+
+[libraries]  # ===========================================================================
+android_gradle_plugin = "com.android.tools.build:gradle:8.9.1"
+kotlin_gradle_plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+
+androidx_test_junit = "androidx.test.ext:junit:1.2.1"
+androidx_test_espresso_core = "androidx.test.espresso:espresso-core:3.6.1"
+
+androidx_core = "androidx.core:core-ktx:1.15.0"
+androidx_appcompat = "androidx.appcompat:appcompat:1.7.0"
+
+junit = "junit:junit:4.13.2"
+
+kotlin_stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
