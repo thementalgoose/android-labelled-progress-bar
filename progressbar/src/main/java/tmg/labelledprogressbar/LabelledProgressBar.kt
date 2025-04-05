@@ -10,8 +10,6 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.animation.DecelerateInterpolator
-import kotlin.math.max
-import kotlin.math.min
 
 private const val defaultTextPaddingDp: Float = 8f
 private const val defaultBackgroundColor: Int = Color.WHITE
@@ -197,9 +195,6 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener, Animator
 
                     // To be removed in the future
                     if (showSliverOnZero && sliverWidth == 0.0f) {
-                        if (BuildConfig.DEBUG) {
-                            Log.d("LabelledProgressBar", "showSliverOnEmpty is set to true but has been deprecated, setting sliverWidth to 1dp. Please use sliverWidth to customise this")
-                        }
                         sliverWidth = defaultSliverWidth
                     }
                 } finally {
@@ -297,7 +292,7 @@ class LabelledProgressBar : View, ValueAnimator.AnimatorUpdateListener, Animator
         valueAnimator.start()
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
         if (firstRun) {
